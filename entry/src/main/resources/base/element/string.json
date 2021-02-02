@@ -1,0 +1,64 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "MyFADemo"
+    },
+    {
+      "name": "mainability_description",
+      "value": "JS_Phone_Empty Feature Ability"
+    },
+    {
+      "name": "computeserviceability_description",
+      "value": "hap sample empty provider"
+    },
+    {
+      "name": "playability_description",
+      "value": "hap sample empty service"
+    },
+    {
+      "name": "dataability_description",
+      "value": "hap sample empty provider"
+    },
+    {
+      "name": "computeserviceability_description",
+      "value": "hap sample empty provider"
+    },
+    {
+      "name": "computeserviceability_description",
+      "value": "hap sample empty service"
+    },
+    {
+      "name": "onremoterequest_description",
+      "value": "hap sample empty service"
+    },
+    {
+      "name": "computeserviceability_description",
+      "value": "hap sample empty service"
+    },
+    {
+      "name": "requestparam_description",
+      "value": "hap sample empty provider"
+    },
+    {
+      "name": "playability_description",
+      "value": "hap sample empty service"
+    },
+    {
+      "name": "hiaceinternalability_description",
+      "value": "hap sample empty provider"
+    },
+    {
+      "name": "hiaceinternalability_description",
+      "value": "hap sample empty service"
+    },
+    {
+      "name": "computeserviceability_description",
+      "value": "hap sample empty service"
+    },
+    {
+      "name": "computeinternalability_description",
+      "value": "hap sample empty service"
+    }
+  ]
+}

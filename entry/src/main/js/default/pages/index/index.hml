@@ -1,0 +1,21 @@
+<!-- index.hml -->
+<div class="container">
+    <div>
+        <text class="title">
+            {{ $t('strings.hello') }} {{title}}
+        </text>
+    </div>
+    <div>
+        <input type="button" title="点击" value="点击"  class="shared-transition-style" onclick="plus()" />
+        <text class="title" onclick="plus">
+            计算1dsadsa
+        </text>
+    </div>
+    <div>
+        <list>
+            <list-item for="{{todolist}}">
+                <text class="todo-title">{{$item}}</text>
+            </list-item>
+        </list>
+    </div>
+</div>

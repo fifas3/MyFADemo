@@ -1,0 +1,109 @@
+{
+  "app": {
+    "bundleName": "com.example.myfademo",
+    "vendor": "example",
+    "version": {
+      "code": 1,
+      "name": "1.0"
+    },
+    "apiVersion": {
+      "compatible": 4,
+      "target": 4,
+      "releaseType": "Beta1"
+    }
+  },
+  "deviceConfig": {},
+  "module": {
+    "package": "com.example.myfademo",
+    "name": ".MyApplication",
+    "deviceType": [
+      "phone",
+      "tv"
+    ],
+    "distro": {
+      "deliveryWithInstall": true,
+      "moduleName": "entry",
+      "moduleType": "entry"
+    },
+    "abilities": [
+      {
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "action.system.home"
+            ]
+          }
+        ],
+        "name": "com.example.myfademo.MainAbility",
+        "icon": "$media:icon",
+        "description": "$string:mainability_description",
+        "label": "MyFADemo",
+        "type": "page",
+        "launchType": "standard"
+      },
+      {
+        "name": "com.example.myfademo.PlayAbility",
+        "icon": "$media:icon",
+        "description": "$string:playability_description",
+        "type": "service"
+      },
+      {
+        "permissions": [
+          "com.example.myfademo.DataAbilityShellProvider.PROVIDER"
+        ],
+        "name": "com.example.myfademo.HiAceInternalAbility",
+        "icon": "$media:icon",
+        "description": "$string:hiaceinternalability_description",
+        "type": "data",
+        "uri": "dataability://com.example.myfademo.HiAceInternalAbility"
+      },
+      {
+        "name": "com.example.myfademo.HiAceInternalAbility",
+        "icon": "$media:icon",
+        "description": "$string:hiaceinternalability_description",
+        "type": "service"
+      },
+      {
+        "name": "com.example.myfademo.ComputeServiceAbility",
+        "icon": "$media:icon",
+        "description": "$string:computeserviceability_description",
+        "type": "service"
+      },
+      {
+        "name": "com.example.myfademo.ComputeInternalAbility",
+        "icon": "$media:icon",
+        "description": "$string:computeinternalability_description",
+        "type": "service"
+      }
+    ],
+    "js": [
+      {
+        "pages": [
+          "pages/index/index"
+        ],
+        "name": "default",
+        "window": {
+          "designWidth": 720,
+          "autoDesignWidth": false
+        }
+      }
+    ],
+    "reqPermissions": [
+      {
+        "name": "ohos.permission.LOCATION"
+      },
+      {
+        "name": "ohos.permission.DISTRIBUTED_DEVICE_STATE_CHANGE"
+      },
+      {
+        "name": "ohos.permission.GET_DISTRIBUTED_DEVICE_INFO"
+      },
+      {
+        "name": "ohos.permission.GET_BUNDLE_INFO"
+      }
+    ]
+  }
+}
