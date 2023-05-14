@@ -9,5 +9,5 @@ action.abilityName = 'com.example.myfademo.ComputeInternalAbility'; //Internal A
 
 HiAceInternalAbility 自己理解为，build的时候读取config.json里面的HiAceInternalAbility，通过HiAceInternalAbility注册ComputeInternalAbility
 
-
+git clone https://github.com/microsoftgraph/msgraph-training-java.git
 
