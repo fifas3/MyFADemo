@@ -1,0 +1,53 @@
+package graphtutorial;
+
+import com.azure.identity.UsernamePasswordCredential;
+import com.azure.identity.UsernamePasswordCredentialBuilder;
+import com.microsoft.graph.authentication.*;
+import com.microsoft.graph.models.*;
+import com.microsoft.graph.requests.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+//https://learn.microsoft.com/zh-cn/azure/api-management/authorizations-how-to-azure-ad
+//在离开页面之前复制客户端密码值
+//值：Cu~8Q~iw0oxj~~2hOMjHmOaoZj7Trl.AGd3dwdpr
+//机密 ID： 5794e20f-dd9b-49ee-ab66-de717742fe7c
+public class GraphApiDemo {
+    public static void main(String[] args) {
+        // Replace with your client ID and client secret
+        String clientId = "d73f3893-036a-4d7b-be23-146c67e87b20";
+        // Replace with your tenant ID and username
+        String tenantId = "9a69c408-c578-46af-8a7a-12f0d1148fee";
+        String username = "liyuannning@outlook.com";
+        String password = "1qaz2wsx123";
+        // Replace with the scopes you need access to
+        // See https://docs.microsoft.com/en-us/graph/permissions-reference
+//        String[] scopes = {"https://graph.microsoft.com/.default"};
+        List<String> scopes = Arrays.asList("https://graph.microsoft.com/User.Read", "https://graph.microsoft.com/Mail.Read");
+
+        System.out.println(clientId);
+        UsernamePasswordCredential credential = new UsernamePasswordCredentialBuilder()
+                .clientId(clientId)
+                .tenantId(tenantId)
+                .username(username)
+                .password(password)
+                .build();
+
+        TokenCredentialAuthProvider authProvider = new TokenCredentialAuthProvider(scopes, credential);
+
+        GraphServiceClient graphClient =
+                GraphServiceClient.builder()
+                        .authenticationProvider(authProvider)
+                        .buildClient();
+
+        System.out.println(graphClient.me().buildRequest().get());
+        System.out.println("1111");
+        final User me = graphClient.me().buildRequest().get();
+        System.out.println("222");
+        MessageCollectionPage  messages = graphClient.me().messages().buildRequest().get();
+        for (Message message : messages.getCurrentPage()) {
+            System.out.println(message.subject + ": " + message.toRecipients.get(0).emailAddress.address);
+        }
+    }
+}
