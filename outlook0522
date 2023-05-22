@@ -1,0 +1,95 @@
+以下是使用 Microsoft Graph API 获取 Outlook 邮件更改通知的示例 Java 代码：
+
+```java
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
+import com.microsoft.graph.models.ChangeNotificationCollection;
+import com.microsoft.graph.models.ChangeNotificationEncryptedContent;
+import com.microsoft.graph.models.Subscription;
+import com.microsoft.graph.requests.ChangeNotificationCollectionRequest;
+import com.microsoft.graph.requests.SubscriptionCollectionRequestBuilder;
+import com.microsoft.graph.requests.SubscriptionRequestBuilder;
+import com.microsoft.graph.requests.UserRequestBuilder;
+
+public class OutlookEmailNotification {
+    private final static String MICROSOFT_APP_ID = "YOUR_APP_ID_HERE";
+    private final static String MICROSOFT_APP_SECRET = "YOUR_APP_SECRET_HERE";
+    private final static String MICROSOFT_TENANT_ID = "YOUR_TENANT_ID_HERE";
+    private final static String USER_EMAIL = "YOUR_USER_EMAIL_HERE";
+    private final static String WEBHOOK_URL = "YOUR_WEBHOOK_URL_HERE";
+    private final static int NOTIFICATION_INTERVAL_MINUTES = 5;
+    
+    public static void main(String[] args) {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        
+        // Create a token auth provider
+        TokenCredentialAuthProvider authProvider = new TokenCredentialAuthProvider(MICROSOFT_APP_ID, MICROSOFT_APP_SECRET, MICROSOFT_TENANT_ID);
+        
+        // Get the user's subscription collection
+        UserRequestBuilder userRequestBuilder = new UserRequestBuilder("https://graph.microsoft.com/v1.0/users/" + USER_EMAIL, authProvider);
+        SubscriptionCollectionRequestBuilder subscriptionCollectionRequestBuilder = userRequestBuilder.subscriptions();
+        
+        // Create a new subscription
+        Subscription newSubscription = new Subscription();
+        newSubscription.changeType = "created,updated";
+        newSubscription.notificationUrl = WEBHOOK_URL;
+        newSubscription.resource = "/me/messages";
+        newSubscription.expirationDateTime = java.time.OffsetDateTime.now().plusMinutes(NOTIFICATION_INTERVAL_MINUTES);
+        
+        // Add the new subscription to the user's subscription collection
+        SubscriptionRequestBuilder newSubscriptionRequestBuilder = subscriptionCollectionRequestBuilder.buildRequest();
+        Subscription createdSubscription = newSubscriptionRequestBuilder.post(newSubscription);
+        
+        // Schedule a task to renew the subscription
+        executor.scheduleAtFixedRate(() -> {
+            createdSubscription.expirationDateTime = java.time.OffsetDateTime.now().plusMinutes(NOTIFICATION_INTERVAL_MINUTES);
+            SubscriptionRequestBuilder renewSubscriptionRequestBuilder = newSubscriptionRequestBuilder.byId(createdSubscription.id);
+            renewSubscriptionRequestBuilder.patch(createdSubscription);
+            System.out.printf("Subscription for resource %s renewed until %s.\n", createdSubscription.resource, createdSubscription.expirationDateTime);
+        }, NOTIFICATION_INTERVAL_MINUTES, NOTIFICATION_INTERVAL_MINUTES, TimeUnit.MINUTES);
+        
+        // Listen for notifications
+        ChangeNotificationCollectionRequest notificationRequest = subscriptionCollectionRequestBuilder.buildRequest().select("value");
+        ChangeNotificationCollection notifications = notificationRequest.get().value;
+        for (ChangeNotificationEncryptedContent notification : notifications.value) {
+            System.out.println(notification.resourceData.toString());
+        }
+    }
+}
+```
+
+在此示例代码中，您需要替换常量 `MICROSOFT_APP_ID`、`MICROSOFT_APP_SECRET`、`MICROSOFT_TENANT_ID`、`USER_EMAIL` 和 `WEBHOOK_URL` 为您自己的应用程序注册信息和用户信息。代码中还有一些变量，例如 `NOTIFICATION_INTERVAL_MINUTES`，您可以根据自己的需要进行更改。执行此代码将获取 Outlook 邮件更改通知并输出到控制台。
+
+此代码使用 Microsoft Graph SDK for Java，您需要将该 SDK 添加到您的项目依赖项中。具体使用说明可以参考此链接：https://github.com/microsoftgraph/msgraph-sdk-java
+
+WEBHOOK_URL 是什么
+
+WEBHOOK_URL 是您的 Webhook 回调 URL，即接收更改通知的 URL。在示例代码中，它是一个字符串常量，并且应该替换为您自己的 URL。当 Outlook 邮件更改时，Microsoft Graph API 将向该 URL 发出 POST 请求，其中包含更改通知信息。您应该在您的应用程序中实现一个接收 POST 请求的端点来处理这些更改通知。
+
+例如，您可以部署一个 RESTful Web 服务并提供一个接口来处理传入的更改通知。当您的应用程序向 Microsoft Graph API 发送请求以创建订阅时，它会指定将使用哪个 URL 作为 Webhook 回调。例如，您可以将 HTTP POST 请求发送到以下 URL：https://example.com/notificationreceiver，当 Outlook 邮件更改时，Microsoft Graph API 将向此 URL 发送更改通知。然后要实现一个 RESTful Web 服务端点，来接收请求和处理更改通知。
+
+
+WEBHOOK_URL 在Azure里面怎么设置
+
+要在 Azure 中设置 Webhook URL，请按照以下步骤进行操作：
+
+登录到 Azure 门户。
+
+点击左侧菜单中的“应用服务”。
+
+选择您想要在其中添加 Webhook 的应用服务。
+
+单击“函数 App Settings”。
+
+搜索“Webhook”，然后单击“添加 Webhook”。
+
+输入 Webhook 的名称和 URL。
+
+点击保存。
+
+现在您已经成功地在 Azure 应用服务中添加了一个 Webhook。可以通过这个 URL 来接收 Outlook 邮件更改的通知。
+
+贴士：在创建订阅时，必须将此 URL 指定为要向其发送更改通知的 Webhook URL。
